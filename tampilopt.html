@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Dashboard OPT</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+<style>
+body{
+  margin:0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.7)),
+  url('https://png.pngtree.com/thumb_back/fh260/background/20240522/pngtree-agriculture-drone-fly-to-sprayed-fertilizer-on-the-rice-fields-image_15691678.jpg');
+  background-size: cover;
+  color:#fff;
+}
+.header{
+  display:flex;
+  align-items:center;
+  gap:15px;
+  padding:15px 25px;
+  backdrop-filter: blur(10px);
+  background: rgba(0,0,0,0.4);
+}
+.header img{ width:60px; }
+.title{ font-size:18px; font-weight:600; }
+
+.menu{
+  display:flex;
+  gap:20px;
+  padding:10px 25px;
+  background: rgba(0,0,0,0.5);
+}
+.menu button{
+  background:none;
+  border:none;
+  color:#fff;
+  cursor:pointer;
+  font-size:14px;
+}
+.menu button:hover{ color:#00ffd5; }
+
+.container{ padding:20px; }
+
+.card{
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(10px);
+  padding:15px;
+  border-radius:15px;
+  margin-bottom:15px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+table{
+  width:100%;
+  border-collapse: collapse;
+  font-size:13px;
+}
+th, td{
+  padding:8px;
+  border-bottom:1px solid rgba(255,255,255,0.2);
+}
+th{ background: rgba(255,255,255,0.1); }
+
+.red{ background: rgba(255,0,0,0.3); }
+
+.filter{ margin-bottom:15px; }
+input{
+  padding:6px;
+  border-radius:8px;
+  border:none;
+}
+
+.btn-download{
+  padding:6px 10px;
+  border:none;
+  border-radius:6px;
+  margin-left:5px;
+  cursor:pointer;
+  background:#00ffd5;
+  color:#000;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <img src="https://www.inhilkab.go.id/assets/portal/img/logos/logo-inhil-big.png">
+  <div class="title">
+    Bidang Tanaman Pangan dan Hortikultura <br>
+    Dinas Pertanian Kabupaten Indragiri Hilir
+  </div>
+</div>
+
+<div class="menu">
+  <button onclick="showPage('dashboard')">Dashboard</button>
+  <button onclick="showPage('rekap')">Rekap</button>
+</div>
+
+<div class="container">
+
+  <div id="dashboard">
+    <div class="card">
+      <h3>Total Laporan</h3>
+      <h1 id="totalData">0</h1>
+    </div>
+
+    <div class="card">
+      <h3>Jenis OPT Terbanyak</h3>
+      <div id="topOPT">-</div>
+    </div>
+
+    <div class="card">
+      <h3>Total Luas Serangan</h3>
+      <h2 id="totalLuas">0 Ha</h2>
+    </div>
+
+    <div class="card">
+      <h3>Grafik Serangan OPT</h3>
+      <canvas id="chartOPT"></canvas>
+    </div>
+
+    <div class="card">
+      <h3>Ranking Kecamatan Rawan</h3>
+      <div id="ranking"></div>
+    </div>
+  </div>
+
+  <div id="rekap" style="display:none;">
+    <div class="card">
+
+      <div class="filter">
+        Filter Tanggal :
+        <input type="date" id="tglFilter">
+
+        <!-- 🔥 tombol baru -->
+        <button class="btn-download" onclick="downloadExcel()">Excel</button>
+        <button class="btn-download" onclick="downloadPDF()">PDF</button>
+      </div>
+
+      <table id="dataTable">
+        <thead>
+          <tr>
+            <th>Tanggal</th>
+            <th>Kecamatan</th>
+            <th>Desa</th>
+            <th>Tanaman</th>
+            <th>OPT</th>
+            <th>Luas</th>
+            <th>Intensitas</th>
+          </tr>
+        </thead>
+        <tbody id="tableData"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+
+const API_URL = "https://script.google.com/macros/s/AKfycbwAVVigXcjQe06R4v4H9v8AcOnwUX_dBDjAwcbaA8E9OwPTOOIbiUcJAaMlPlSaLRM_vg/exec";
+
+let dataGlobal = [];
+let dataFilter = [];
+let chart;
+
+function showPage(page){
+  document.getElementById('dashboard').style.display='none';
+  document.getElementById('rekap').style.display='none';
+  document.getElementById(page).style.display='block';
+}
+
+function loadData(){
+  fetch(API_URL)
+    .then(res => res.json())
+    .then(data => {
+
+      let header = data[0];
+      let rows = data.slice(1);
+
+      dataGlobal = rows.map(row => {
+        let obj = {};
+        header.forEach((h,i)=> obj[h]=row[i]);
+        return obj;
+      });
+
+      dataFilter = dataGlobal;
+
+      renderDashboard();
+      renderTable(dataGlobal);
+    });
+}
+
+function renderDashboard(){
+  document.getElementById('totalData').innerText = dataGlobal.length;
+
+  let countOPT={}, luasTotal=0, kecamatanRank={};
+
+  dataGlobal.forEach(d=>{
+    let luas=parseFloat(d["Luas Terserang"])||0;
+    luasTotal+=luas;
+
+    countOPT[d["Jenis OPT"]] = (countOPT[d["Jenis OPT"]]||0)+1;
+    kecamatanRank[d["Kecamatan"]] = (kecamatanRank[d["Kecamatan"]]||0)+luas;
+  });
+
+  document.getElementById('totalLuas').innerText = luasTotal.toFixed(2)+" Ha";
+
+  let top = Object.entries(countOPT).sort((a,b)=>b[1]-a[1])[0];
+  document.getElementById('topOPT').innerText = top ? top[0] : "-";
+
+  renderChart(countOPT);
+  renderRanking(kecamatanRank);
+}
+
+function renderChart(data){
+  let labels=Object.keys(data), values=Object.values(data);
+  if(chart) chart.destroy();
+  chart=new Chart(document.getElementById('chartOPT'),{
+    type:'bar',
+    data:{labels,datasets:[{label:'Jumlah Kasus',data:values}]}
+  });
+}
+
+function renderRanking(data){
+  let sorted=Object.entries(data).sort((a,b)=>b[1]-a[1]);
+  let html="<ol>";
+  sorted.forEach(r=> html+=`<li>${r[0]} - ${r[1].toFixed(2)} Ha</li>`);
+  html+="</ol>";
+  document.getElementById('ranking').innerHTML=html;
+}
+
+function renderTable(data){
+  dataFilter = data;
+
+  if(data.length===0){
+    document.getElementById('tableData').innerHTML =
+    `<tr><td colspan="7" style="text-align:center">Tidak ada laporan</td></tr>`;
+    return;
+  }
+
+  let html="";
+  data.forEach(d=>{
+    let intensitas=parseFloat(d["Intensitas"])||0;
+    let warn=intensitas>50?"class='red'":"";
+    html+=`
+    <tr ${warn}>
+      <td>${formatTanggal(d["Tanggal Pengamatan"])}</td>
+      <td>${d["Kecamatan"]}</td>
+      <td>${d["Desa"]}</td>
+      <td>${d["Jenis Tanaman"]}</td>
+      <td>${d["Jenis OPT"]}</td>
+      <td>${d["Luas Terserang"]}</td>
+      <td>${d["Intensitas"]}%</td>
+    </tr>`;
+  });
+  document.getElementById('tableData').innerHTML=html;
+}
+
+/* FILTER */
+document.getElementById('tglFilter').addEventListener('change', function(){
+  let tgl=this.value;
+  if(!tgl){ renderTable(dataGlobal); return; }
+
+  let filtered=dataGlobal.filter(d=>{
+    let dt=new Date(d["Tanggal Pengamatan"]);
+    let fix=`${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`;
+    return fix===tgl;
+  });
+
+  renderTable(filtered);
+});
+
+/* ===== DOWNLOAD EXCEL ===== */
+function downloadExcel(){
+  let ws = XLSX.utils.json_to_sheet(dataFilter);
+  let wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Laporan OPT");
+  XLSX.writeFile(wb, "Laporan_OPT.xlsx");
+}
+
+/* ===== DOWNLOAD PDF ===== */
+function downloadPDF(){
+  const { jsPDF } = window.jspdf;
+  let doc = new jsPDF('l', 'mm', 'a4'); // landscape biar lega
+
+  // Judul
+  doc.setFontSize(14);
+  doc.text("LAPORAN PERINGATAN OPT", 14, 15);
+
+  doc.setFontSize(10);
+  doc.text("Bidang Tanaman Pangan dan Hortikultura", 14, 22);
+  doc.text("Dinas Pertanian Kabupaten Indragiri Hilir", 14, 27);
+
+  // Header tabel
+  let head = [[
+    "Tanggal",
+    "Kecamatan",
+    "Desa",
+    "Tanaman",
+    "OPT",
+    "Luas (Ha)",
+    "Intensitas (%)"
+  ]];
+
+  // Body tabel
+  let body = dataFilter.map(d => [
+    formatTanggal(d["Tanggal Pengamatan"]),
+    d["Kecamatan"],
+    d["Desa"],
+    d["Jenis Tanaman"],
+    d["Jenis OPT"],
+    d["Luas Terserang"],
+    d["Intensitas"]
+  ]);
+
+  // Tabel
+  doc.autoTable({
+    startY: 32,
+    head: head,
+    body: body,
+    styles: {
+      fontSize: 8
+    },
+    headStyles: {
+      fillColor: [0, 0, 0]
+    },
+    alternateRowStyles: {
+      fillColor: [240, 240, 240]
+    },
+    didParseCell: function (data) {
+      // 🔥 WARNING merah kalau intensitas > 50
+      if (data.section === 'body' && data.column.index === 6) {
+        let val = parseFloat(data.cell.raw) || 0;
+        if (val > 50) {
+          data.cell.styles.fillColor = [255, 0, 0];
+          data.cell.styles.textColor = [255, 255, 255];
+        }
+      }
+    }
+  });
+
+  doc.save("Laporan_OPT.pdf");
+}
+
+
+function formatTanggal(t){
+  if(!t) return "";
+  return new Date(t).toLocaleDateString('id-ID');
+}
+
+loadData();
+
+</script>
+
+</body>
+</html>

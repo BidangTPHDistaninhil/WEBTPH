@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>Bidang Tanaman Pangan & Hortikultura</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+:root{
+  --green:#2ed573;
+  --green2:#1db954;
+  --dark:#08140d;
+  --glass:rgba(255,255,255,0.08);
+  --border:rgba(255,255,255,0.12);
+  --text:#ffffff;
+  --soft:rgba(255,255,255,0.72);
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Plus Jakarta Sans',sans-serif;
+}
+
+body{
+  background:#08140d;
+  color:white;
+  overflow-x:hidden;
+}
+
+/* BACKGROUND */
+
+.hero{
+  position:relative;
+  min-height:100vh;
+  overflow:hidden;
+}
+
+.hero::before{
+  content:'';
+  position:absolute;
+  inset:0;
+
+  background:
+  linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.55),
+    rgba(4,30,15,0.75)
+  ),
+
+  url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1920&auto=format&fit=crop')
+  center/cover no-repeat;
+
+  animation:zoomBg 20s ease-in-out infinite alternate;
+}
+
+@keyframes zoomBg{
+  from{
+    transform:scale(1);
+  }
+  to{
+    transform:scale(1.08);
+  }
+}
+
+/* OVERLAY */
+
+.hero::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:
+  radial-gradient(circle at top right,
+  rgba(46,213,115,0.18),
+  transparent 30%);
+}
+
+/* GLOW */
+
+.glow{
+  position:absolute;
+  width:500px;
+  height:500px;
+  border-radius:50%;
+  background:radial-gradient(circle,var(--green),transparent 70%);
+  filter:blur(120px);
+  opacity:0.18;
+}
+
+.glow1{
+  top:-120px;
+  right:-120px;
+}
+
+.glow2{
+  bottom:-160px;
+  left:-120px;
+}
+
+/* NAVBAR */
+
+.navbar{
+  position:fixed;
+  top:0;
+  width:100%;
+  z-index:100;
+  padding:20px 40px;
+}
+
+.navWrap{
+  backdrop-filter:blur(20px);
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:24px;
+
+  padding:18px 24px;
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.logoArea{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+
+.logo{
+  width:54px;
+  height:54px;
+  border-radius:16px;
+
+  background:linear-gradient(135deg,#44ff99,#1db954);
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-size:26px;
+
+  box-shadow:0 0 30px rgba(46,213,115,0.4);
+}
+
+.logoText h2{
+  font-size:16px;
+  font-weight:800;
+}
+
+.logoText p{
+  font-size:12px;
+  color:rgba(255,255,255,0.7);
+}
+
+/* HERO CONTENT */
+
+.heroContent{
+  position:relative;
+  z-index:5;
+
+  min-height:100vh;
+
+  display:flex;
+  align-items:center;
+
+  padding:140px 60px 80px;
+}
+
+.heroGrid{
+  width:100%;
+
+  display:grid;
+  grid-template-columns:1.2fr 1fr;
+  gap:60px;
+
+  align-items:center;
+}
+
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+
+  padding:12px 20px;
+
+  background:rgba(255,255,255,0.08);
+
+  border:1px solid rgba(255,255,255,0.12);
+
+  border-radius:999px;
+
+  margin-bottom:28px;
+
+  backdrop-filter:blur(18px);
+
+  animation:float 4s ease-in-out infinite;
+}
+
+.badgeDot{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:#44ff99;
+
+  box-shadow:0 0 15px #44ff99;
+}
+
+@keyframes float{
+  0%,100%{
+    transform:translateY(0);
+  }
+  50%{
+    transform:translateY(-8px);
+  }
+}
+
+.heroTitle{
+  font-size:72px;
+  line-height:1.05;
+  font-weight:900;
+  margin-bottom:26px;
+}
+
+.heroTitle span{
+  background:linear-gradient(to right,#8dffb5,#ffffff);
+
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.heroDesc{
+  font-size:18px;
+  line-height:1.8;
+  color:rgba(255,255,255,0.78);
+
+  max-width:720px;
+}
+
+/* BUTTON */
+
+.heroButtons{
+  display:flex;
+  gap:18px;
+  margin-top:40px;
+}
+
+.btn{
+  padding:16px 30px;
+  border-radius:16px;
+  border:none;
+
+  font-weight:700;
+  cursor:pointer;
+
+  transition:0.35s;
+}
+
+.btnPrimary{
+  background:linear-gradient(135deg,#1db954,#44ff99);
+  color:#082011;
+
+  box-shadow:0 10px 30px rgba(29,185,84,0.35);
+}
+
+.btnPrimary:hover{
+  transform:translateY(-4px);
+}
+
+.btnGlass{
+  background:rgba(255,255,255,0.08);
+  color:white;
+  border:1px solid rgba(255,255,255,0.12);
+  backdrop-filter:blur(20px);
+}
+
+/* CARD */
+
+.sideCards{
+  display:flex;
+  flex-direction:column;
+  gap:22px;
+}
+
+.infoCard{
+  background:rgba(255,255,255,0.08);
+
+  border:1px solid rgba(255,255,255,0.12);
+
+  backdrop-filter:blur(18px);
+
+  border-radius:28px;
+
+  padding:24px;
+
+  display:flex;
+  gap:18px;
+
+  align-items:center;
+
+  transition:0.35s;
+}
+
+.infoCard:hover{
+  transform:translateY(-8px);
+  box-shadow:0 20px 50px rgba(0,0,0,0.35);
+}
+
+.infoCard img{
+  width:120px;
+  height:100px;
+  object-fit:cover;
+  border-radius:20px;
+}
+
+.infoCard h3{
+  font-size:24px;
+  margin-bottom:8px;
+}
+
+.infoCard p{
+  color:rgba(255,255,255,0.7);
+  line-height:1.6;
+}
+
+/* MODAL LOGIN */
+
+.modal{
+  position:fixed;
+  inset:0;
+
+  background:rgba(0,0,0,0.6);
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  opacity:0;
+  visibility:hidden;
+
+  transition:0.35s;
+
+  z-index:999;
+}
+
+.modal.active{
+  opacity:1;
+  visibility:visible;
+}
+
+.loginCard{
+  position:relative;
+
+  width:100%;
+  max-width:420px;
+
+  background:rgba(255,255,255,0.08);
+
+  border:1px solid rgba(255,255,255,0.12);
+
+  backdrop-filter:blur(30px);
+
+  border-radius:30px;
+
+  padding:40px;
+}
+
+.loginCard h2{
+  font-size:32px;
+  margin-bottom:10px;
+}
+
+.loginCard p{
+  color:rgba(255,255,255,0.7);
+  margin-bottom:28px;
+}
+
+.inputBox{
+  margin-bottom:16px;
+}
+
+.inputBox input{
+  width:100%;
+
+  padding:16px;
+
+  border-radius:16px;
+
+  border:1px solid rgba(255,255,255,0.12);
+
+  background:rgba(255,255,255,0.06);
+
+  color:white;
+
+  outline:none;
+}
+
+.inputBox input::placeholder{
+  color:rgba(255,255,255,0.45);
+}
+
+.loginBtn{
+  width:100%;
+  padding:16px;
+
+  border:none;
+
+  border-radius:16px;
+
+  background:linear-gradient(135deg,#1db954,#44ff99);
+
+  color:#082011;
+
+  font-weight:800;
+
+  cursor:pointer;
+
+  margin-top:8px;
+}
+
+.closeBtn{
+  position:absolute;
+  top:20px;
+  right:20px;
+
+  width:42px;
+  height:42px;
+
+  border-radius:50%;
+  border:none;
+
+  background:rgba(255,255,255,0.08);
+
+  color:white;
+
+  cursor:pointer;
+}
+
+/* ERROR */
+
+#errorMsg{
+  margin-top:14px;
+  color:#ff9b9b;
+  font-size:14px;
+  min-height:20px;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:980px){
+
+.heroGrid{
+  grid-template-columns:1fr;
+}
+
+.heroTitle{
+  font-size:52px;
+}
+
+.heroContent{
+  padding:140px 24px 80px;
+}
+
+.navbar{
+  padding:16px;
+}
+
+}
+
+@media(max-width:600px){
+
+.heroTitle{
+  font-size:40px;
+}
+
+.heroButtons{
+  flex-direction:column;
+}
+
+.infoCard{
+  flex-direction:column;
+}
+
+.infoCard img{
+  width:100%;
+  height:180px;
+}
+
+.loginCard{
+  margin:20px;
+  padding:32px 24px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="hero">
+
+  <div class="glow glow1"></div>
+  <div class="glow glow2"></div>
+
+  <!-- NAVBAR -->
+
+  <div class="navbar">
+    <div class="navWrap">
+
+      <div class="logoArea">
+        <div class="logo">🌾</div>
+
+        <div class="logoText">
+          <h2>Tanaman Pangan & Hortikultura</h2>
+          <p>Dinas Pertanian Kabupaten Indragiri Hilir</p>
+        </div>
+      </div>
+
+      <button class="btn btnGlass" onclick="openLogin()">
+        Login Sistem
+      </button>
+
+    </div>
+  </div>
+
+  <!-- HERO -->
+
+  <div class="heroContent">
+
+    <div class="heroGrid">
+
+      <!-- LEFT -->
+
+      <div>
+
+        <div class="badge">
+          <div class="badgeDot"></div>
+          SISTEM MONITORING INTERNAL BIDANG
+        </div>
+
+        <h1 class="heroTitle">
+          Sistem Informasi
+          <span>
+            Tanaman Pangan
+          </span>
+          dan Hortikultura
+        </h1>
+
+        <p class="heroDesc">
+          Pusat informasi digital Bidang Tanaman Pangan dan Hortikultura yang dirancang untuk mendukung monitoring produksi, stok pangan, perkembangan harga, serta pelaporan pertanian secara realtime melalui sistem yang modern, profesional, dan terintegrasi.
+        </p>
+
+        
+      </div>
+
+      <!-- RIGHT -->
+
+      </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- LOGIN MODAL -->
+
+<div class="modal" id="loginModal">
+
+  <div class="loginCard">
+
+    <button class="closeBtn" onclick="closeLogin()">
+      ✕
+    </button>
+
+    <h2>Login Sistem</h2>
+
+    <p>
+      Masukkan username dan password Anda
+    </p>
+
+    <div class="inputBox">
+      <input
+        type="text"
+        id="username"
+        placeholder="Username"
+        autocomplete="username"
+      >
+    </div>
+
+    <div class="inputBox">
+      <input
+        type="password"
+        id="password"
+        placeholder="Password"
+        autocomplete="current-password"
+      >
+    </div>
+
+    <button
+      class="loginBtn"
+      id="btnLogin"
+      onclick="login()"
+    >
+      Masuk Sistem
+    </button>
+
+    <button
+      class="btn btnGlass"
+      style="width:100%;margin-top:12px;"
+      onclick="guestLogin()"
+    >
+      👁 Masuk sebagai Tamu
+    </button>
+
+    <div id="errorMsg"></div>
+
+  </div>
+
+</div>
+
+<script>
+
+const API_LOGIN =
+"https://script.google.com/macros/s/AKfycbxx7xTTXYdKMHyarBoj3638vcVhzRfN002q__ey-_QH-QRn1ZiJO95UdFts_O22a0dSnw/exec";
+
+/* OPEN MODAL */
+
+function openLogin(){
+
+  document
+    .getElementById('loginModal')
+    .classList.add('active');
+
+}
+
+/* CLOSE MODAL */
+
+function closeLogin(){
+
+  document
+    .getElementById('loginModal')
+    .classList.remove('active');
+
+}
+
+/* CLICK OUTSIDE */
+
+window.addEventListener('click', function(e){
+
+  const modal =
+    document.getElementById('loginModal');
+
+  if(e.target === modal){
+    closeLogin();
+  }
+
+});
+
+/* LOGIN */
+
+function login() {
+
+  const btn =
+    document.getElementById("btnLogin");
+
+  const msg =
+    document.getElementById("errorMsg");
+
+  const user =
+    document.getElementById("username")
+    .value.trim();
+
+  const pass =
+    document.getElementById("password")
+    .value.trim();
+
+  if (!user || !pass) {
+
+    msg.textContent =
+      "Harap isi username dan password.";
+
+    return;
+  }
+
+  btn.disabled = true;
+  btn.innerText = "Memproses...";
+  msg.textContent = "";
+
+  fetch(API_LOGIN, {
+
+    method: "POST",
+
+    body: JSON.stringify({
+      username: user,
+      password: pass
+    })
+
+  })
+
+  .then(res => res.json())
+
+  .then(res => {
+
+    if (res.status === "ok") {
+
+      localStorage.setItem(
+        "loginUser",
+        user
+      );
+
+      localStorage.setItem(
+        "role",
+        res.role
+      );
+
+      localStorage.setItem(
+        "token",
+        res.token
+      );
+
+      if (
+        res.role === "admin" ||
+        res.role === "kadis" ||
+        res.role === "sekre"
+      ) {
+
+        window.location.href =
+          "dashboad.html";
+
+      } else {
+
+        window.location.href =
+          "dashboard2.html";
+
+      }
+
+    } else {
+
+      msg.textContent =
+        "Username atau password salah.";
+
+      btn.disabled = false;
+      btn.innerText = "Masuk Sistem";
+
+    }
+
+  })
+
+  .catch(() => {
+
+    msg.textContent =
+      "Koneksi ke server gagal!";
+
+    btn.disabled = false;
+    btn.innerText = "Masuk Sistem";
+
+  });
+
+}
+
+/* GUEST LOGIN */
+
+function guestLogin(){
+
+  localStorage.setItem(
+    "loginUser",
+    "guest"
+  );
+
+  window.location.href =
+    "dashboard2.html";
+
+}
+
+/* ENTER KEY */
+
+document.addEventListener(
+  "keypress",
+  e => {
+
+    if (e.key === "Enter") {
+      login();
+    }
+
+  }
+);
+
+</script>
+
+</body>
+</html>
