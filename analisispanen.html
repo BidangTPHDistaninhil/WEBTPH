@@ -129,13 +129,15 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
   animation: slideDown 0.5s ease-out;
 }
+header > .hdr-left { margin-right: auto; }
 @keyframes slideDown {
   from { transform: translateY(-100%); opacity: 0; }
   to   { transform: translateY(0); opacity: 1; }
 }
-.hdr-left { display: flex; align-items: center; gap: 14px; }
+.hdr-left { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
 .hdr-logo {
   width: 40px; height: 40px;
   background: linear-gradient(135deg, var(--green-light), var(--gold));
@@ -147,7 +149,7 @@ header {
 }
 .hdr-title { font-size: 15px; font-weight: 700; line-height: 1.2; }
 .hdr-sub { font-size: 10px; color: var(--text-dim); font-weight: 400; letter-spacing: 0.4px; margin-top: 1px; }
-.hdr-right { display: flex; align-items: center; gap: 10px; }
+.hdr-right { display: flex; align-items: center; gap: 10px; flex-wrap: nowrap; flex-shrink: 0; }
 .hdr-pill {
   display: flex; align-items: center; gap: 7px;
   background: var(--glass);
@@ -186,6 +188,7 @@ header {
   text-decoration: none;
   cursor: pointer;
   transition: all 0.2s;
+  flex-shrink: 0;
 }
 .hdr-home svg { width: 14px; height: 14px; flex-shrink: 0; stroke: var(--green-glow); transition: stroke 0.2s; }
 .hdr-home:hover {
@@ -651,11 +654,11 @@ footer strong { color: var(--text-dim); font-weight: 600; }
       <div class="hdr-sub">Sistem Monitoring Luas Tambah Tanam dan Luas Panen · Dinas Pertanian</div>
     </div>
   </div>
-  <div class="Tampilltt.html">
-    <a href="index.html" class="hdr-home" title="Kembali ke Home">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9"/></svg>
-      <span>Kembali ke Home</span>
-    </a>
+  <a href="Tampilltt.html" class="hdr-home" title="Kembali ke Home">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9"/></svg>
+    <span>Kembali ke Home</span>
+  </a>
+  <div class="hdr-right">
     <div class="hdr-pill"><div class="live-dot"></div> Live Data</div>
     <div class="hdr-pill" id="clock">--:--:--</div>
     <div class="hdr-pill" id="dateNow">—</div>
